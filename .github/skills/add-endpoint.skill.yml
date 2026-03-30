@@ -1,0 +1,16 @@
+name: add-endpoint
+description: "Scaffolds a new API endpoint following the 3-layer architecture (route, service, repository)"
+trigger:
+  - "add endpoint"
+  - "new endpoint"
+  - "create route"
+instructions: |
+  When adding a new API endpoint, always generate code across all three layers:
+
+  1. **Repository** (app/repositories/) — Pure SQLAlchemy async query. Accepts AsyncSession via DI. Returns ORM model objects. No business logic, no HTTP knowledge.
+  2. **Service** (app/services/) — Business logic. Calls repository methods. Raises HTTPException for rule violations (404, 409, etc.). Handles commit/rollback.
+  3. **Route** (app/routes/) — FastAPI router handler. Validates input via Pydantic schema. Calls service. Returns HTTP response with correct status code.
+  4. **Schema** (app/schemas/) — Pydantic v2 request/response DTOs if new shapes are needed.
+
+  All methods must be async def with full type hints and docstrings.
+  Follow the dependency injection chain: get_db → Repository → Service → Route.
