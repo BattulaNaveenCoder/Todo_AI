@@ -1,0 +1,39 @@
+name: test-generator
+description: "Auto-triggers when generating tests. Ensures proper test structure, fixtures, and coverage for both backend (pytest-asyncio) and frontend (vitest/testing-library)."
+trigger:
+  - "generate tests"
+  - "write tests"
+  - "add tests"
+  - "create test"
+  - "unit test"
+instructions: |
+  When generating tests, follow these standards:
+
+  ## Backend Tests (api/tests/)
+  - Use pytest with pytest-asyncio for async test functions
+  - Test file naming: test_<module>.py (e.g., test_todo_service.py)
+  - Use fixtures for database sessions, test data, and service/repository instances
+  - Test structure per function:
+    - Happy path (expected input → expected output)
+    - Edge cases (empty input, boundary values)
+    - Error cases (not found, duplicates, invalid input)
+  - Mock the repository layer when testing services
+  - Mock the service layer when testing routes
+  - Use httpx.AsyncClient for route/integration tests
+  - Assert specific HTTP status codes and response shapes
+
+  ## Frontend Tests (web/src/**/*.test.tsx)
+  - Use vitest + @testing-library/react
+  - Test file co-located with component: Component.test.tsx
+  - Mock API service functions, never mock React Query internals
+  - Test structure:
+    - Renders correctly with data
+    - Handles loading state
+    - Handles error state
+    - User interactions trigger correct callbacks
+  - Use screen queries (getByRole, getByText) over test IDs where possible
+
+  ## General
+  - Every test must have a descriptive name explaining WHAT is tested and EXPECTED outcome
+  - No test should depend on another test's state
+  - Aim for both positive and negative test cases
