@@ -3,11 +3,13 @@
 import logging
 import os
 from collections.abc import AsyncGenerator
+from pathlib import Path
 
 from dotenv import load_dotenv
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
-load_dotenv()
+# Resolve .env relative to this file so it is found regardless of cwd
+load_dotenv(dotenv_path=Path(__file__).resolve().parent.parent.parent / ".env")
 
 logger = logging.getLogger(__name__)
 

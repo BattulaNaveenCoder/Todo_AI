@@ -1,5 +1,6 @@
 ---
 applyTo: "web/src/**/*.{ts,tsx}"
+description: "Use when working on React and TypeScript frontend files in web/src/: pages, components, hooks, services, shared types, and UI state/data-fetching conventions."
 ---
 
 # React & TypeScript Instructions

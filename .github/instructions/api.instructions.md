@@ -1,5 +1,6 @@
 ---
 applyTo: "api/**/*.py"
+description: "Use when working on FastAPI backend Python files in api/: routes, services, repositories, SQLAlchemy models, Pydantic schemas, async database access, and backend architecture conventions."
 ---
 
 # Python Language Instructions

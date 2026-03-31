@@ -1,5 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
+import { TodosPage } from "./pages/TodosPage";
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -12,9 +14,9 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
+      {/* Global page shell — padding and font applied once here */}
       <main style={{ padding: "2rem", fontFamily: "system-ui, sans-serif" }}>
-        <h1>Todo AI</h1>
-        <p>App is running. Ready for Phase 1.</p>
+        <TodosPage />
       </main>
     </QueryClientProvider>
   );

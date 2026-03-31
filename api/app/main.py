@@ -32,8 +32,12 @@ def create_app() -> FastAPI:
         """Return API health status."""
         return {"status": "healthy"}
 
-    # Router registration — will be added in Phase 1
-    # application.include_router(todo_router, prefix="/api/todos", tags=["todos"])
+    # Phase 1: register Todo CRUD router
+    from app.routes.todo_router import router as todo_router
+
+    application.include_router(todo_router, prefix="/api/todos", tags=["todos"])
+
+    # Phase 3 (categories) router will be added here
     # application.include_router(category_router, prefix="/api/categories", tags=["categories"])
 
     logger.info("Todo AI API initialized")
