@@ -1,28 +1,38 @@
+# Environment files — NEVER commit these
+.env
+.env.local
+.env.*.local
+
 # Python
 __pycache__/
-*.pyc
+*.py[cod]
 *.pyo
-*.egg-info/
 .venv/
+venv/
+*.egg-info/
 dist/
 build/
+.pytest_cache/
+.coverage
+htmlcov/
+.ruff_cache/
 
 # Node
 node_modules/
 dist/
+.vite/
+coverage/
 
-# Environment files (contain secrets)
-.env
-!.env.example
-
-# IDE
-.idea/
-*.swp
-*.swo
+# VS Code
+.vscode/*.log
 
 # OS
 .DS_Store
 Thumbs.db
 
-# Alembic
-alembic/versions/__pycache__/
+# SQL Server
+*.mdf
+*.ldf
+
+# Alembic — do NOT ignore versions/
+# alembic/versions/ is committed intentionally
