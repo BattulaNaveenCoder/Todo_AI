@@ -8,7 +8,7 @@ from app.config import settings
 from app.db.base import Base
 
 # Import all models here so Alembic can detect them for autogenerate.
-# Phase 1: from app.models.todo import Todo  # noqa: F401
+from app.models.todo import Todo  # noqa: F401
 
 config = context.config
 config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)

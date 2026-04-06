@@ -25,8 +25,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(health_router)
+from app.routes.todos import router as todo_router
 
-# Phase 1 routers will be registered here:
-# from app.routes.todos import router as todo_router
-# app.include_router(todo_router, prefix="/api/v1")
+app.include_router(health_router)
+app.include_router(todo_router)
