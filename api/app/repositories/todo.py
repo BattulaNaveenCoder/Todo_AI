@@ -47,7 +47,7 @@ class TodoRepository:
         Returns:
             The newly created Todo ORM object (before commit).
         """
-        todo = Todo(**data.model_dump())
+        todo = Todo(**data.model_dump(), is_completed=False)
         self.session.add(todo)
         await self.session.flush()
         return todo

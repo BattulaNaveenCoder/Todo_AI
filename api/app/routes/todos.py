@@ -43,7 +43,7 @@ def get_todo_service(
 
 
 @router.get(
-    "/",
+    "",
     response_model=list[TodoResponse],
     status_code=status.HTTP_200_OK,
     summary="List all todos",
@@ -64,7 +64,7 @@ async def list_todos(
 
 
 @router.post(
-    "/",
+    "",
     response_model=TodoResponse,
     status_code=status.HTTP_201_CREATED,
     summary="Create a new todo",
