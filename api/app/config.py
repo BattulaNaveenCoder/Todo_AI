@@ -31,4 +31,4 @@ class Settings(BaseSettings):
         return [origin.strip() for origin in self.CORS_ORIGINS.split(",")]
 
 
-settings = Settings()  # type: ignore[call-arg]
+settings = Settings()  # type: ignore[call-arg] — fields populated from .env at runtime

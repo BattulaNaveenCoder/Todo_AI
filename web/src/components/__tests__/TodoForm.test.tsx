@@ -1,11 +1,29 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { TodoForm } from '../TodoForm'
 import type { TodoCreate } from '@/types'
 
+vi.mock('@/hooks/useCategories', () => ({
+  useCategories: vi.fn(() => ({
+    data: [],
+    isLoading: false,
+    isError: false,
+  })),
+}))
+
+const createWrapper = () => {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  })
+  return ({ children }: { children: React.ReactNode }) => (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  )
+}
+
 describe('TodoForm', () => {
   it('renders the title input and submit button', () => {
-    render(<TodoForm onSubmit={vi.fn()} isLoading={false} />)
+    render(<TodoForm onSubmit={vi.fn()} isLoading={false} />, { wrapper: createWrapper() })
 
     expect(screen.getByLabelText(/title/i)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /add todo/i })).toBeInTheDocument()
@@ -13,7 +31,7 @@ describe('TodoForm', () => {
 
   it('shows an error message when submitted with an empty title', async () => {
     const user = userEvent.setup()
-    render(<TodoForm onSubmit={vi.fn()} isLoading={false} />)
+    render(<TodoForm onSubmit={vi.fn()} isLoading={false} />, { wrapper: createWrapper() })
 
     await user.click(screen.getByRole('button', { name: /add todo/i }))
 
@@ -24,7 +42,7 @@ describe('TodoForm', () => {
   it('does not call onSubmit when title is empty', async () => {
     const user = userEvent.setup()
     const onSubmit = vi.fn()
-    render(<TodoForm onSubmit={onSubmit} isLoading={false} />)
+    render(<TodoForm onSubmit={onSubmit} isLoading={false} />, { wrapper: createWrapper() })
 
     await user.click(screen.getByRole('button', { name: /add todo/i }))
 
@@ -34,7 +52,7 @@ describe('TodoForm', () => {
   it('does not call onSubmit when title is only whitespace', async () => {
     const user = userEvent.setup()
     const onSubmit = vi.fn()
-    render(<TodoForm onSubmit={onSubmit} isLoading={false} />)
+    render(<TodoForm onSubmit={onSubmit} isLoading={false} />, { wrapper: createWrapper() })
 
     await user.type(screen.getByLabelText(/title/i), '   ')
     await user.click(screen.getByRole('button', { name: /add todo/i }))
@@ -45,7 +63,7 @@ describe('TodoForm', () => {
   it('calls onSubmit with trimmed title when form is valid', async () => {
     const user = userEvent.setup()
     const onSubmit = vi.fn()
-    render(<TodoForm onSubmit={onSubmit} isLoading={false} />)
+    render(<TodoForm onSubmit={onSubmit} isLoading={false} />, { wrapper: createWrapper() })
 
     await user.type(screen.getByLabelText(/title/i), '  Buy groceries  ')
     await user.click(screen.getByRole('button', { name: /add todo/i }))
@@ -58,7 +76,7 @@ describe('TodoForm', () => {
   it('includes description in the payload when filled in', async () => {
     const user = userEvent.setup()
     const onSubmit = vi.fn()
-    render(<TodoForm onSubmit={onSubmit} isLoading={false} />)
+    render(<TodoForm onSubmit={onSubmit} isLoading={false} />, { wrapper: createWrapper() })
 
     await user.type(screen.getByLabelText(/title/i), 'Task')
     await user.type(screen.getByLabelText(/description/i), 'Some detail')
@@ -70,7 +88,7 @@ describe('TodoForm', () => {
 
   it('clears the form inputs after a successful submission', async () => {
     const user = userEvent.setup()
-    render(<TodoForm onSubmit={vi.fn()} isLoading={false} />)
+    render(<TodoForm onSubmit={vi.fn()} isLoading={false} />, { wrapper: createWrapper() })
     const titleInput = screen.getByLabelText(/title/i)
 
     await user.type(titleInput, 'Some task')
@@ -80,7 +98,7 @@ describe('TodoForm', () => {
   })
 
   it('disables the submit button when isLoading is true', () => {
-    render(<TodoForm onSubmit={vi.fn()} isLoading={true} />)
+    render(<TodoForm onSubmit={vi.fn()} isLoading={true} />, { wrapper: createWrapper() })
 
     expect(screen.getByRole('button', { name: /adding/i })).toBeDisabled()
   })

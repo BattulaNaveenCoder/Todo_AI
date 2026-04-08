@@ -8,6 +8,7 @@ from app.config import settings
 from app.db.base import Base
 
 # Import all models here so Alembic can detect them for autogenerate.
+from app.models.category import Category  # noqa: F401
 from app.models.todo import Todo  # noqa: F401
 
 config = context.config
@@ -38,7 +39,7 @@ def run_migrations_offline() -> None:
         context.run_migrations()
 
 
-def do_run_migrations(connection):  # type: ignore[no-untyped-def]
+def do_run_migrations(connection):  # type: ignore[no-untyped-def] — Alembic callback signature not typed
     context.configure(connection=connection, target_metadata=target_metadata)
     with context.begin_transaction():
         context.run_migrations()

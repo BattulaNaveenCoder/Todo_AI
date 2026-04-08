@@ -21,6 +21,13 @@
   gap: 0.25rem;
 }
 
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
 .title {
   font-size: 1rem;
   color: #1e293b;

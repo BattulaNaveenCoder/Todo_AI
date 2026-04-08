@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.session import get_db
+from app.repositories.category import CategoryRepository
 from app.repositories.todo import TodoRepository
 from app.schemas.todo import TodoCreate, TodoResponse, TodoUpdate
 from app.services.todo import TodoService
@@ -28,18 +29,34 @@ def get_todo_repository(
     return TodoRepository(session)
 
 
+def get_category_repository(
+    session: Annotated[AsyncSession, Depends(get_db)],
+) -> CategoryRepository:
+    """Provide a CategoryRepository for the current request.
+
+    Args:
+        session: Injected async database session.
+
+    Returns:
+        CategoryRepository bound to the session.
+    """
+    return CategoryRepository(session)
+
+
 def get_todo_service(
     repository: Annotated[TodoRepository, Depends(get_todo_repository)],
+    category_repository: Annotated[CategoryRepository, Depends(get_category_repository)],
 ) -> TodoService:
     """Provide a TodoService for the current request.
 
     Args:
         repository: Injected TodoRepository.
+        category_repository: Injected CategoryRepository.
 
     Returns:
-        TodoService bound to the repository.
+        TodoService bound to the repositories.
     """
-    return TodoService(repository)
+    return TodoService(repository, category_repository)
 
 
 @router.get(
@@ -60,7 +77,7 @@ async def list_todos(
     Returns:
         List of TodoResponse objects.
     """
-    return await service.get_all()  # type: ignore[return-value]
+    return await service.get_all()
 
 
 @router.post(
@@ -83,7 +100,7 @@ async def create_todo(
     Returns:
         The created TodoResponse.
     """
-    return await service.create(payload)  # type: ignore[return-value]
+    return await service.create(payload)
 
 
 @router.get(
@@ -109,7 +126,7 @@ async def get_todo(
     Raises:
         HTTPException: 404 if the todo does not exist.
     """
-    return await service.get_by_id(todo_id)  # type: ignore[return-value]
+    return await service.get_by_id(todo_id)
 
 
 @router.put(
@@ -137,7 +154,7 @@ async def update_todo(
     Raises:
         HTTPException: 404 if the todo does not exist.
     """
-    return await service.update(todo_id, payload)  # type: ignore[return-value]
+    return await service.update(todo_id, payload)
 
 
 @router.delete(

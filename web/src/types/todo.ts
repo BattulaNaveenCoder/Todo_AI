@@ -3,6 +3,8 @@ export interface Todo {
   title: string
   description: string | null
   isCompleted: boolean
+  categoryId: number | null
+  categoryName: string | null
   createdAt: string
   updatedAt: string
 }
@@ -10,10 +12,12 @@ export interface Todo {
 export interface TodoCreate {
   title: string
   description?: string
+  categoryId?: number
 }
 
 export interface TodoUpdate {
   title?: string
   description?: string
   isCompleted?: boolean
+  categoryId?: number | null
 }

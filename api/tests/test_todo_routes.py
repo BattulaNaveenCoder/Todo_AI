@@ -8,23 +8,28 @@ from httpx import ASGITransport, AsyncClient
 from app.main import app
 from app.models.todo import Todo
 from app.routes.todos import get_todo_service
+from app.schemas.todo import TodoResponse
 
 
-def make_todo(
+def make_todo_response(
     id: int = 1,
     title: str = "Test Todo",
     description: str | None = None,
     is_completed: bool = False,
-) -> Todo:
-    """Build a Todo ORM instance with default test values."""
-    todo = Todo()
-    todo.id = id
-    todo.title = title
-    todo.description = description
-    todo.is_completed = is_completed
-    todo.created_at = datetime(2024, 1, 1, 12, 0, 0)
-    todo.updated_at = datetime(2024, 1, 1, 12, 0, 0)
-    return todo
+    category_id: int | None = None,
+    category_name: str | None = None,
+) -> TodoResponse:
+    """Build a TodoResponse instance with default test values."""
+    return TodoResponse(
+        id=id,
+        title=title,
+        description=description,
+        is_completed=is_completed,
+        category_id=category_id,
+        category_name=category_name,
+        created_at=datetime(2024, 1, 1, 12, 0, 0),
+        updated_at=datetime(2024, 1, 1, 12, 0, 0),
+    )
 
 
 @pytest.fixture
@@ -71,7 +76,7 @@ async def test_list_todos_returns_200_with_todos(
     client: AsyncClient, mock_service: MagicMock
 ) -> None:
     """GET /api/v1/todos returns 200 and the list of todos."""
-    todos = [make_todo(id=1, title="First"), make_todo(id=2, title="Second")]
+    todos = [make_todo_response(id=1, title="First"), make_todo_response(id=2, title="Second")]
     mock_service.get_all.return_value = todos
 
     response = await client.get("/api/v1/todos")
@@ -92,7 +97,7 @@ async def test_create_todo_returns_201(
     client: AsyncClient, mock_service: MagicMock
 ) -> None:
     """POST /api/v1/todos with valid payload returns 201 with the new todo."""
-    todo = make_todo(id=1, title="My Task")
+    todo = make_todo_response(id=1, title="My Task")
     mock_service.create.return_value = todo
 
     response = await client.post("/api/v1/todos", json={"title": "My Task"})
@@ -142,7 +147,7 @@ async def test_get_todo_returns_200_when_found(
     client: AsyncClient, mock_service: MagicMock
 ) -> None:
     """GET /api/v1/todos/{id} returns 200 with the todo when it exists."""
-    todo = make_todo(id=5, title="Found Todo")
+    todo = make_todo_response(id=5, title="Found Todo")
     mock_service.get_by_id.return_value = todo
 
     response = await client.get("/api/v1/todos/5")
@@ -175,7 +180,7 @@ async def test_update_todo_returns_200(
     client: AsyncClient, mock_service: MagicMock
 ) -> None:
     """PUT /api/v1/todos/{id} returns 200 with the updated todo."""
-    updated = make_todo(id=3, title="Updated Title", is_completed=True)
+    updated = make_todo_response(id=3, title="Updated Title", is_completed=True)
     mock_service.update.return_value = updated
 
     response = await client.put(
@@ -206,7 +211,7 @@ async def test_update_todo_with_empty_body_returns_200(
     client: AsyncClient, mock_service: MagicMock
 ) -> None:
     """PUT /api/v1/todos/{id} with an empty body returns 200 (all fields optional)."""
-    todo = make_todo(id=2, title="Unchanged")
+    todo = make_todo_response(id=2, title="Unchanged")
     mock_service.update.return_value = todo
 
     response = await client.put("/api/v1/todos/2", json={})
@@ -242,3 +247,75 @@ async def test_delete_todo_returns_404_when_not_found(
 
     assert response.status_code == 404
     assert "detail" in response.json()
+
+
+# ---------------------------------------------------------------------------
+# POST / GET with category_id
+# ---------------------------------------------------------------------------
+
+
+async def test_create_todo_with_category_id_returns_201(
+    client: AsyncClient, mock_service: MagicMock
+) -> None:
+    """POST /api/v1/todos with a valid category_id returns 201 with category_name."""
+    todo = make_todo_response(
+        id=1, title="Task", category_id=5, category_name="Work"
+    )
+    mock_service.create.return_value = todo
+
+    response = await client.post(
+        "/api/v1/todos", json={"title": "Task", "categoryId": 5}
+    )
+
+    assert response.status_code == 201
+    data = response.json()
+    assert data["categoryId"] == 5
+    assert data["categoryName"] == "Work"
+
+
+async def test_create_todo_with_invalid_category_id_returns_404(
+    client: AsyncClient, mock_service: MagicMock
+) -> None:
+    """POST /api/v1/todos with a non-existent category_id returns 404."""
+    mock_service.create.side_effect = HTTPException(
+        status_code=404, detail="Category with id 999 not found"
+    )
+
+    response = await client.post(
+        "/api/v1/todos", json={"title": "Task", "categoryId": 999}
+    )
+
+    assert response.status_code == 404
+    assert "detail" in response.json()
+
+
+async def test_todo_response_includes_category_name(
+    client: AsyncClient, mock_service: MagicMock
+) -> None:
+    """GET /api/v1/todos/{id} response includes category_name when present."""
+    todo = make_todo_response(
+        id=1, title="Task", category_id=3, category_name="Personal"
+    )
+    mock_service.get_by_id.return_value = todo
+
+    response = await client.get("/api/v1/todos/1")
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["categoryId"] == 3
+    assert data["categoryName"] == "Personal"
+
+
+async def test_todo_response_includes_null_category_name(
+    client: AsyncClient, mock_service: MagicMock
+) -> None:
+    """GET /api/v1/todos/{id} response includes null category_name when no category."""
+    todo = make_todo_response(id=2, title="No Cat")
+    mock_service.get_by_id.return_value = todo
+
+    response = await client.get("/api/v1/todos/2")
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["categoryId"] is None
+    assert data["categoryName"] is None

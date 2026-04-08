@@ -2,6 +2,7 @@ import logging
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
 
 from app.models.todo import Todo
 from app.schemas.todo import TodoCreate, TodoUpdate
@@ -19,10 +20,12 @@ class TodoRepository:
         """Return all todos ordered by created_at descending.
 
         Returns:
-            List of Todo ORM objects.
+            List of Todo ORM objects with category eagerly loaded.
         """
         result = await self.session.execute(
-            select(Todo).order_by(Todo.created_at.desc())
+            select(Todo)
+            .options(joinedload(Todo.category))
+            .order_by(Todo.created_at.desc())
         )
         return list(result.scalars().all())
 
@@ -33,9 +36,13 @@ class TodoRepository:
             todo_id: Primary key of the todo.
 
         Returns:
-            Todo ORM object or None.
+            Todo ORM object or None, with category eagerly loaded.
         """
-        result = await self.session.execute(select(Todo).where(Todo.id == todo_id))
+        result = await self.session.execute(
+            select(Todo)
+            .options(joinedload(Todo.category))
+            .where(Todo.id == todo_id)
+        )
         return result.scalars().first()
 
     async def create(self, data: TodoCreate) -> Todo:
