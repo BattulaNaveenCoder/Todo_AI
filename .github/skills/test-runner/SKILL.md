@@ -1,6 +1,9 @@
 ---
 name: test-runner
 description: "Auto-triggered when asked to run tests. Detects context (backend or frontend), runs the correct test suite, and reports results with suggested fixes for failures. TRIGGER PHRASES: run tests, run the tests, run pytest, run vitest, check tests, are tests passing, test results."
+argument-hint: "Which tests to run: backend | frontend | all"
+user-invocable: true
+disable-model-invocation: false
 ---
 
 # Test Runner

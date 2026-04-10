@@ -1,6 +1,9 @@
 ---
 name: api-endpoint-generation
 description: "Auto-triggered when generating FastAPI endpoints. Generates all three layers (Routes → Services → Repositories) together with correct schemas, DI wiring, status codes, error handling, docstrings, and Alembic migration guidance. TRIGGER PHRASES: generate endpoint, create endpoint, add endpoint, generate crud, create crud, add route, generate api for."
+argument-hint: "Describe the resource to generate (e.g., 'CRUD for projects')"
+user-invocable: true
+disable-model-invocation: false
 ---
 
 # API Endpoint Generation

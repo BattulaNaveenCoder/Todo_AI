@@ -1,6 +1,9 @@
 ---
 name: db-migration
 description: "Auto-triggered when modifying SQLAlchemy models or requesting Alembic migrations. Guides safe, reversible schema evolution. Catches data-loss risks, ordering issues, and SQL Server-specific constraints before migration is applied. TRIGGER PHRASES: create migration, generate migration, alembic migration, database migration, schema change, model changed, add column, add table."
+argument-hint: "Describe the schema change (e.g., 'add priority column to todos')"
+user-invocable: true
+disable-model-invocation: false
 ---
 
 # DB Migration

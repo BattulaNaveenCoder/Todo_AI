@@ -2,6 +2,8 @@
 name: dev-runner
 description: 'Start, stop, or test the Todo AI monorepo. USE FOR: running the FastAPI backend server; running the React Vite frontend dev server; running pytest backend tests; running Vitest frontend tests; starting both servers together; checking if servers are healthy. TRIGGER PHRASES: run backend, start api, start server, run frontend, start web, run dev, run tests, backend tests, frontend tests, pytest, vitest, start the app.'
 argument-hint: 'What to run: backend | frontend | both | test-api | test-web | test-all'
+user-invocable: true
+disable-model-invocation: false
 ---
 
 # Dev Runner

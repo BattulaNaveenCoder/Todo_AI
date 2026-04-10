@@ -1,6 +1,9 @@
 ---
 name: performance-review
 description: "Auto-triggered when asked about performance. Reviews backend (FastAPI/SQLAlchemy) and frontend (React/React Query) for bottlenecks, N+1 queries, missing indexes, unnecessary re-renders, and network inefficiencies. Reports findings by severity. TRIGGER PHRASES: performance review, is this performant, check performance, performance audit, optimize this, n+1, slow query."
+argument-hint: "Paste code or describe what to review for performance"
+user-invocable: true
+disable-model-invocation: false
 ---
 
 # Performance Review

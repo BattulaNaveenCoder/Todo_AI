@@ -1,6 +1,9 @@
 ---
 name: security-review
 description: "Auto-triggered on security review prompts. Performs OWASP Top 10 mapped security audit across backend (FastAPI/SQLAlchemy) and frontend (React/TypeScript). Reports findings as PASS / WARN / FAIL with remediation steps. TRIGGER PHRASES: security review, security check, check vulnerabilities, audit this code, security audit, owasp review, review for vulnerabilities."
+argument-hint: "Paste code or describe what to audit for security vulnerabilities"
+user-invocable: true
+disable-model-invocation: false
 ---
 
 # Security Review

@@ -140,7 +140,7 @@ Utils (src/utils/)           Pure helper functions.
 - All features merged via Pull Request — never commit directly to `main`.
 - Conventional Commits: `feat(api): ...`, `fix(web): ...`, `test(api): ...`,
   `chore(repo): ...`, `docs: ...`, `refactor(api): ...`.
-- Run code review prompt before every PR merge.
+- Run code review prompt before every PR merge (`pr-review` skill — combines test-runner, security-review, performance-review).
 
 ---
 

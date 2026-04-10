@@ -1,6 +1,9 @@
 ---
 name: test-generator
 description: "Auto-triggered when generating tests. Enforces AAA pattern, pytest-asyncio for backend, Vitest + RTL for frontend. Covers happy path, edge cases, and error cases. Names tests descriptively and mocks all external dependencies. TRIGGER PHRASES: generate tests, write tests, add unit tests, add tests, create test file, test coverage, create tests for."
+argument-hint: "Specify the file or module to generate tests for"
+user-invocable: true
+disable-model-invocation: false
 ---
 
 # Test Generator
